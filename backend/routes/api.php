@@ -32,3 +32,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
 });
+
+
+// Test d'accès administrateur
+Route::middleware(['auth:sanctum', 'admin'])
+    ->get('/admin/check', function () {
+        return response()->json([
+            'message' => 'Bienvenue dans espace Admin',
+            'role' => 'admin',
+    ]);
+});
