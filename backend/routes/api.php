@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\Admin\BusController;
 
+use App\Http\Controllers\Api\Admin\StopController;
+
 Route::get('/status', function () {
     DB::select('SELECT 1');
 
@@ -50,6 +52,7 @@ Route::middleware(['auth:sanctum', 'admin'])
     ->group(function () {
 
         Route::apiResource('buses', BusController::class);
+        Route::apiResource('stops', StopController::class);
 
     });
 
