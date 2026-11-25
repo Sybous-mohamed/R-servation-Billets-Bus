@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\Admin\BusController;
 use App\Http\Controllers\Api\Admin\StopController;
 use App\Http\Controllers\Api\Admin\RouteController;
+use App\Http\Controllers\Api\Admin\RecurringScheduleController;
 
 
 Route::get('/status', function () {
@@ -56,6 +57,10 @@ Route::middleware(['auth:sanctum', 'admin'])
         Route::apiResource('buses', BusController::class);
         Route::apiResource('stops', StopController::class);
         Route::apiResource('routes', RouteController::class);
+Route::apiResource(
+    'recurring-schedules',
+    RecurringScheduleController::class
+)->only(['index', 'store', 'show', 'update', 'destroy']);
 
     });
 
