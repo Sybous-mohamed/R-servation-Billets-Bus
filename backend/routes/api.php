@@ -8,7 +8,8 @@ use App\Http\Controllers\Api\Admin\BusController;
 use App\Http\Controllers\Api\Admin\StopController;
 use App\Http\Controllers\Api\Admin\RouteController;
 use App\Http\Controllers\Api\Admin\RecurringScheduleController;
-
+use App\Http\Controllers\Api\Admin\TripController;
+use App\Http\Controllers\Api\Admin\RecurringTripGenerationController;
 
 Route::get('/status', function () {
     DB::select('SELECT 1');
@@ -25,7 +26,7 @@ Route::get('/ping', function () {
     ]);
 });
 
-//Authentification
+// Authentification
 
 // Routes publiques
 Route::middleware('throttle:5,1')->group(function () {
@@ -39,15 +40,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 
-
 // Test d'accès administrateur
 Route::middleware(['auth:sanctum', 'admin'])
     ->get('/admin/check', function () {
         return response()->json([
             'message' => 'Bienvenue dans espace Admin',
             'role' => 'admin',
-    ]);
-});
+        ]);
+    });
 
 // Admin - Gestion des Bus
 Route::middleware(['auth:sanctum', 'admin'])
@@ -57,10 +57,25 @@ Route::middleware(['auth:sanctum', 'admin'])
         Route::apiResource('buses', BusController::class);
         Route::apiResource('stops', StopController::class);
         Route::apiResource('routes', RouteController::class);
-Route::apiResource(
-    'recurring-schedules',
-    RecurringScheduleController::class
-)->only(['index', 'store', 'show', 'update', 'destroy']);
+        Route::apiResource(
+            'recurring-schedules',
+            RecurringScheduleController::class
+        )->only(['index', 'store', 'show', 'update', 'destroy']);
+
+        Route::apiResource(
+            'trips',
+            TripController::class
+        )->only(['index', 'store', 'show']);
+
+        // Génération automatique des voyages
+        Route::post(
+            'recurring-schedules/{recurringSchedule}/generate-trips',
+            RecurringTripGenerationController::class
+        );
+
+        Route::patch(
+            'trips/{trip}/status',
+            [TripController::class, 'updateStatus']
+        );
 
     });
-
